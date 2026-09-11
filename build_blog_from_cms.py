@@ -15,7 +15,7 @@ import os, re, glob, yaml, datetime, html as html_lib
 import markdown as md
 
 SITE_DIR = os.environ.get("SITE_OUTPUT_DIR", "/mnt/user-data/outputs/site")
-CONTENT_DIR = "/home/claude/cms_build/content/blog"
+CONTENT_DIR = "/mnt/user-data/outputs/site/content/blog"
 DOMAIN = "https://www.visitbenintours.com"
 TEMPLATE_PATH = os.path.join(SITE_DIR, "about.html")  # page déjà générée, sert de moule
 

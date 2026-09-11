@@ -1,4 +1,27 @@
 
+// ── Français par défaut à la première visite (respecte le choix explicite ensuite) ──
+(() => {
+  const path = window.location.pathname;
+  const isFrenchPage = path.includes('/fr/');
+  const isBlogArticle = path.includes('/blog/');           // déjà en français, pas de doublon sous /fr/
+  const NO_FR_EQUIVALENT = ['tour-pendjari-safari.html'];   // pages sans version FR
+  const filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+  const chosen = localStorage.getItem('vbt_lang_chosen');
+
+  if (!isFrenchPage && !isBlogArticle && !NO_FR_EQUIVALENT.includes(filename) && !chosen) {
+    window.location.replace('fr/' + filename + window.location.search + window.location.hash);
+    return;
+  }
+
+  const langLinks = document.querySelectorAll('.lang-switch a, #langSwitchLink, #mobileLangSwitchLink');
+  langLinks.forEach(a => {
+    a.addEventListener('click', () => {
+      const goingToFrench = a.getAttribute('href')?.includes('/fr/') || a.textContent.trim() === 'FR';
+      localStorage.setItem('vbt_lang_chosen', goingToFrench ? 'fr' : 'en');
+    });
+  });
+})();
+
 function openWhatsapp() {
   const msg = encodeURIComponent("Hello! I'm interested in booking a tour with Visit Bénin Tours. Could you tell me more about your available tours and prices?");
   window.open('https://wa.me/2290159255518?text=' + msg, '_blank');

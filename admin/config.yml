@@ -1,0 +1,62 @@
+backend:
+  name: github
+  repo: VOTRE-COMPTE-GITHUB/VOTRE-DEPOT   # ⚠️ à remplacer, ex: jsmith/visitbenintours-site
+  branch: main
+  # Decap CMS a besoin d'un petit service d'authentification OAuth GitHub.
+  # Le plus simple et gratuit : https://github.com/decaporg/decap-cms-oauth-provider
+  # Alternative sans backend à héberger : passer par Netlify (gratuit) uniquement pour l'auth,
+  # même si le site continue d'être déployé sur Vercel.
+  # base_url: https://votre-service-oauth.vercel.app
+
+media_folder: "images/blog/uploads"   # les images uploadées via le CMS iront ici
+public_folder: "/images/blog/uploads"
+
+publish_mode: editorial_workflow   # active le vrai flux Brouillon → En revue → Publié
+
+locale: "fr"
+
+collections:
+  - name: "blog"
+    label: "Blog"
+    label_singular: "Article"
+    folder: "content/blog"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    identifier_field: title
+    sortable_fields: ["date", "title"]
+    view_groups:
+      - label: "Statut"
+        field: draft
+    fields:
+      - { label: "Titre de l'article", name: "title", widget: "string", required: true }
+      - { label: "URL / Slug", name: "slug", widget: "string", required: true, hint: "Utilisé dans l'adresse web, ex: guide-ganvie-2026 → visitbenintours.com/blog/guide-ganvie-2026.html" }
+      - label: "Catégorie"
+        name: "category"
+        widget: "select"
+        options: ["Guide de voyage", "Culture", "Conseils pratiques", "Destinations", "Actualités"]
+        required: true
+      - { label: "Mots-clés", name: "tags", widget: "list", required: false, hint: "Un mot-clé par ligne" }
+      - { label: "Extrait (résumé court, affiché sur la page Blog)", name: "excerpt", widget: "text", required: true }
+      - { label: "Image principale", name: "featured_image", widget: "image", required: true, media_library: { config: { max_file_size: 5000000 } } }
+      - { label: "Texte alternatif de l'image principale (SEO/accessibilité)", name: "featured_image_alt", widget: "string", required: true }
+      - label: "Galerie d'images (optionnel)"
+        name: "gallery"
+        widget: "list"
+        required: false
+        field: { label: "Image", name: "image", widget: "image" }
+      - label: "— Référencement (SEO) —"
+        name: "seo_divider"
+        widget: "hidden"
+        default: ""
+      - { label: "Meta Title (balise <title>, 60 car. max conseillé)", name: "meta_title", widget: "string", required: true }
+      - { label: "Meta Description (155 car. max conseillé)", name: "meta_description", widget: "text", required: true }
+      - label: "Statut de publication"
+        name: "draft"
+        widget: "select"
+        options:
+          - { label: "Brouillon (invisible sur le site)", value: "draft" }
+          - { label: "Publié", value: "published" }
+        default: "draft"
+      - { label: "Date de publication", name: "date", widget: "datetime", required: true, hint: "Une date future = publication programmée (voir note plus bas)" }
+      - { label: "Contenu de l'article", name: "body", widget: "markdown", required: true }
