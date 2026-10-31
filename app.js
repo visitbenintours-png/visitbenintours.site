@@ -1,18 +1,6 @@
 
-// ── Français par défaut à la première visite (respecte le choix explicite ensuite) ──
+// Language selection is explicit: keep English and French URLs independently crawlable.
 (() => {
-  const path = window.location.pathname;
-  const isFrenchPage = path.includes('/fr/');
-  const isBlogArticle = path.includes('/blog/');           // déjà en français, pas de doublon sous /fr/
-  const NO_FR_EQUIVALENT = ['tour-pendjari-safari.html'];   // pages sans version FR
-  const filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
-  const chosen = localStorage.getItem('vbt_lang_chosen');
-
-  if (!isFrenchPage && !isBlogArticle && !NO_FR_EQUIVALENT.includes(filename) && !chosen) {
-    window.location.replace('fr/' + filename + window.location.search + window.location.hash);
-    return;
-  }
-
   const langLinks = document.querySelectorAll('.lang-switch a, #langSwitchLink, #mobileLangSwitchLink');
   langLinks.forEach(a => {
     a.addEventListener('click', () => {
