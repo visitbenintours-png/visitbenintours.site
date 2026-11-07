@@ -12,11 +12,11 @@
 
 function openWhatsapp() {
   const msg = encodeURIComponent("Hello! I'm interested in booking a tour with Visit Bénin Tours. Could you tell me more about your available tours and prices?");
-  window.open('https://wa.me/2290159255518?text=' + msg, '_blank');
+  window.open('https://wa.me/2290191174682?text=' + msg, '_blank');
 }
 
 function openCall() {
-  window.location.href = 'tel:+2290159255518';
+  window.location.href = 'tel:+2290191174682';
 }
 
 function toggleMenu() {
