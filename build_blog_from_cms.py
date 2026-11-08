@@ -171,7 +171,7 @@ def render_blog_card(article, language="en"):
     href = f"../blog/{slug}.html" if is_french else f"blog/{slug}.html"
     image_src = f"../{img}" if is_french else img
     read_more = "Lire la suite →" if is_french else "Read more →"
-    return f\'''      <a class="blog-card" href="{href}">
+    return f'''      <a class="blog-card" href="{href}">
         <div class="dest-card-img">
           <picture><img class="dest-card-photo" src="{image_src}" width="1448" height="1086" loading="lazy" alt="{html_lib.escape(article['featured_image_alt'])}" onerror="this.closest('picture').remove()"></picture>
           <span class="dest-card-icon">📝</span>
@@ -183,7 +183,7 @@ def render_blog_card(article, language="en"):
           <span class="blog-card-link">{read_more}</span>
         </div>
       </a>
-\'''
+'''
 
 
 def update_blog_listing(published, language="en"):
