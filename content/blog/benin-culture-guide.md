@@ -1,6 +1,7 @@
 ---
 title: "Bénin Culture Guide: What to Know Before You Go"
 slug: "benin-culture-guide"
+language: "en"
 category: "Culture"
 tags:
   - culture
