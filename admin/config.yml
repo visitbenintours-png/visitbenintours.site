@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: VOTRE-COMPTE-GITHUB/VOTRE-DEPOT   # ⚠️ à remplacer, ex: jsmith/visitbenintours-site
+  repo: visitbenintours-png/visitbenintours.site
   branch: main
   # Decap CMS a besoin d'un petit service d'authentification OAuth GitHub.
   # Le plus simple et gratuit : https://github.com/decaporg/decap-cms-oauth-provider
