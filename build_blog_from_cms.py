@@ -11,11 +11,11 @@ Lit tous les fichiers Markdown dans content/blog/ (le format que Decap CMS
 Ce script doit tourner à CHAQUE déploiement (voir vercel.json : il est appelé
 automatiquement dans "buildCommand"). Vous n'avez jamais à le lancer vous-même.
 """
-import os, re, glob, yaml, datetime, html as html_lib
+import os, re, glob, yaml, datetime, html as html_lib, json
 import markdown as md
 
-SITE_DIR = os.environ.get("SITE_OUTPUT_DIR", "/mnt/user-data/outputs/site")
-CONTENT_DIR = "/mnt/user-data/outputs/site/content/blog"
+SITE_DIR = os.environ.get("SITE_OUTPUT_DIR", os.path.dirname(os.path.abspath(__file__)))
+CONTENT_DIR = os.path.join(SITE_DIR, "content", "blog")
 DOMAIN = "https://www.visitbenintours.com"
 TEMPLATE_PATH = os.path.join(SITE_DIR, "about.html")  # page déjà générée, sert de moule
 
@@ -65,6 +65,25 @@ def render_article_page(article, template_head, nav_block, footer_block):
     img_alt = article["featured_image_alt"]
     pub_date_iso = article["date"] if isinstance(article["date"], str) else article["date"].isoformat()
 
+    jsonld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": article["title"],
+        "description": desc,
+        "image": f"{DOMAIN}/{img}",
+        "datePublished": pub_date_iso,
+        "author": {"@type": "Organization", "name": "Visit Bénin Tours"},
+        "publisher": {
+            "@type": "Organization",
+            "name": "Visit Bénin Tours",
+            "logo": {
+                "@type": "ImageObject",
+                "url": f"{DOMAIN}/images/brand/logo-visit-benin-tours.png",
+            },
+        },
+        "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
+    }, ensure_ascii=False, indent=2)
+
     head = f'''<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -85,20 +104,7 @@ def render_article_page(article, template_head, nav_block, footer_block):
 <meta property="article:published_time" content="{pub_date_iso}">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
-{{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": {html_lib.escape(article['title'])!r},
-  "description": {desc!r},
-  "image": "{DOMAIN}/{img}",
-  "datePublished": "{pub_date_iso}",
-  "author": {{"@type": "Organization", "name": "Visit Bénin Tours"}},
-  "publisher": {{
-    "@type": "Organization", "name": "Visit Bénin Tours",
-    "logo": {{"@type": "ImageObject", "url": "{DOMAIN}/images/brand/logo-visit-benin-tours.png"}}
-  }},
-  "mainEntityOfPage": {{"@type": "WebPage", "@id": "{canonical}"}}
-}}
+{jsonld}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,600;1,900&family=DM+Sans:wght@300;400;500;600;700&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
