@@ -1,6 +1,7 @@
 ---
 title: "10 choses à savoir avant de voyager au Bénin"
 slug: "conseils-voyage-benin"
+language: "fr"
 category: "Conseils pratiques"
 tags:
   - conseils de voyage
