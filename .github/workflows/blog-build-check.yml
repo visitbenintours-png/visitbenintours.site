@@ -1,0 +1,66 @@
+name: Validate CMS blog build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "build_blog_from_cms.py"
+      - "requirements.txt"
+      - "content/blog/**"
+      - "blog.html"
+      - "fr/blog.html"
+      - "about.html"
+      - "sitemap.xml"
+      - ".github/workflows/blog-build-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install blog dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Prepare clean site output
+        run: |
+          mkdir -p _site
+          rsync -a --exclude='.git/' --exclude='_site/' ./ _site/
+      - name: Generate blog pages, listings and sitemap
+        env:
+          SITE_OUTPUT_DIR: ${{ github.workspace }}/_site
+        run: python build_blog_from_cms.py
+      - name: Validate generated pages and structured data
+        run: |
+          python - <<'PY'
+          import glob, json, os, re, xml.etree.ElementTree as ET
+          root = "_site"
+          pages = sorted(glob.glob(os.path.join(root, "blog", "*.html")))
+          assert pages, "No blog pages were generated"
+          assert os.path.isfile(os.path.join(root, "fr", "blog.html")), "French blog listing missing"
+          assert os.path.isfile(os.path.join(root, "blog.html")), "English blog listing missing"
+          for path in pages:
+              html = open(path, encoding="utf-8").read()
+              assert re.search(r'<html lang="(?:fr|en)">', html), f"Missing/invalid language: {path}"
+              assert '<link rel="canonical"' in html, f"Missing canonical: {path}"
+              match = re.search(r'<script type="application/ld\+json">\s*(.*?)\s*</script>', html, re.S)
+              assert match, f"Missing JSON-LD: {path}"
+              data = json.loads(match.group(1))
+              assert data.get("@type") == "BlogPosting", f"Wrong schema type: {path}"
+              assert data.get("inLanguage") in ("fr", "en"), f"Wrong schema language: {path}"
+          sitemap = ET.parse(os.path.join(root, "sitemap.xml"))
+          locs = [el.text for el in sitemap.findall(".//{*}loc")]
+          assert len(locs) == len(set(locs)), "Duplicate sitemap URLs detected"
+          for path in pages:
+              slug = os.path.basename(path)
+              expected = "https://www.visitbenintours.com/blog/" + slug
+              assert expected in locs, f"Generated article missing from sitemap: {slug}"
+          print(f"Validated {len(pages)} blog pages, both language listings, BlogPosting JSON-LD and sitemap.")
+          PY
