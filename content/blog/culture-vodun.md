@@ -1,6 +1,7 @@
 ---
 title: "Comprendre le Vodun : le patrimoine spirituel vivant du Bénin"
 slug: "culture-vodun"
+language: "fr"
 category: "Culture"
 tags:
   - Vodun
