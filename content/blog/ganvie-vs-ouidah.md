@@ -1,6 +1,7 @@
 ---
 title: "Ganvié vs Ouidah: Which Should You Visit First?"
 slug: "ganvie-vs-ouidah"
+language: "en"
 category: "Guide de voyage"
 tags:
   - Ganvié
