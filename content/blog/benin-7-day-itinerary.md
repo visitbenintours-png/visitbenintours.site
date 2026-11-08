@@ -1,6 +1,7 @@
 ---
 title: "A 7-Day Bénin Itinerary That Actually Works"
 slug: "benin-7-day-itinerary"
+language: "en"
 category: "Guide de voyage"
 tags:
   - itinerary
