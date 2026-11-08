@@ -1,6 +1,7 @@
 ---
 title: "Ganvié : le guide complet pour visiter la Venise de l'Afrique"
 slug: "guide-ganvie"
+language: "fr"
 category: "Guide de voyage"
 tags:
   - Ganvié
