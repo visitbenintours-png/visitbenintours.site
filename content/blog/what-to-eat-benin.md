@@ -1,6 +1,7 @@
 ---
 title: "What to Eat in Bénin: A Practical Food Guide"
 slug: "what-to-eat-benin"
+language: "en"
 category: "Conseils pratiques"
 tags:
   - food
