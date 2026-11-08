@@ -1,6 +1,7 @@
 ---
 title: "Is Bénin Safe for Tourists? An Honest Answer"
 slug: "benin-safe-tourists"
+language: "en"
 category: "Conseils pratiques"
 tags:
   - safety
