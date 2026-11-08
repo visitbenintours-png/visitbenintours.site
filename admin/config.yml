@@ -31,6 +31,7 @@ collections:
     fields:
       - { label: "Titre de l'article", name: "title", widget: "string", required: true }
       - { label: "URL / Slug", name: "slug", widget: "string", required: true, hint: "Utilisé dans l'adresse web, ex: guide-ganvie-2026 → visitbenintours.com/blog/guide-ganvie-2026.html" }
+      - { label: "Langue de l’article", name: "language", widget: "select", options: [{ label: "Français", value: "fr" }, { label: "English", value: "en" }], default: "fr", required: true }
       - label: "Catégorie"
         name: "category"
         widget: "select"
