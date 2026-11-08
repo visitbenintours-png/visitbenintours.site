@@ -164,26 +164,31 @@ def render_article_page(article, template_head, nav_block, footer_block):
     return head + nav_block + body + footer_block + '\n<script src="../app.js" defer></script>\n</body>\n</html>\n'
 
 
-def render_blog_card(article):
+def render_blog_card(article, language="en"):
     slug = article["slug"]
     img = article["featured_image"].lstrip("/")
-    return f'''      <a class="blog-card" href="blog/{slug}.html">
+    is_french = language == "fr"
+    href = f"../blog/{slug}.html" if is_french else f"blog/{slug}.html"
+    image_src = f"../{img}" if is_french else img
+    read_more = "Lire la suite →" if is_french else "Read more →"
+    return f\'''      <a class="blog-card" href="{href}">
         <div class="dest-card-img">
-          <picture><img class="dest-card-photo" src="{img}" width="1448" height="1086" loading="lazy" alt="{html_lib.escape(article['featured_image_alt'])}" onerror="this.closest('picture').remove()"></picture>
+          <picture><img class="dest-card-photo" src="{image_src}" width="1448" height="1086" loading="lazy" alt="{html_lib.escape(article['featured_image_alt'])}" onerror="this.closest('picture').remove()"></picture>
           <span class="dest-card-icon">📝</span>
         </div>
         <div class="blog-card-body">
           <span class="blog-card-tag">{html_lib.escape(article['category'])}</span>
           <h3>{html_lib.escape(article['title'])}</h3>
           <p>{html_lib.escape(article['excerpt'])}</p>
-          <span class="blog-card-link">Lire la suite →</span>
+          <span class="blog-card-link">{read_more}</span>
         </div>
       </a>
-'''
+\'''
 
 
-def update_blog_listing(published):
-    blog_path = os.path.join(SITE_DIR, "blog.html")
+def update_blog_listing(published, language="en"):
+    is_french = language == "fr"
+    blog_path = os.path.join(SITE_DIR, "fr", "blog.html") if is_french else os.path.join(SITE_DIR, "blog.html")
     s = open(blog_path, encoding="utf-8").read()
     start = s.find('<div class="blog-grid">') + len('<div class="blog-grid">')
     end = s.find('</div>', s.find('<div class="blog-grid">'))
@@ -203,10 +208,11 @@ def update_blog_listing(published):
             depth -= 1
             i = nc + 6
     end = i - len('</div>')
-    cards = "\n".join(render_blog_card(a) for a in published)
+    language_articles = [a for a in published if str(a.get("language", "fr")).lower() == language]
+    cards = "\n".join(render_blog_card(a, language) for a in language_articles)
     new_s = s[:start] + "\n" + cards + s[end:]
     open(blog_path, "w", encoding="utf-8").write(new_s)
-    print(f"✓ blog.html mis à jour avec {len(published)} article(s)")
+    print(f"✓ {blog_path} mis à jour avec {len(language_articles)} article(s)")
 
 
 
@@ -254,7 +260,8 @@ def main():
         open(out_path, "w", encoding="utf-8").write(html_out)
         print("✓ généré:", out_path)
 
-    update_blog_listing(published)
+    update_blog_listing(published, "en")
+    update_blog_listing(published, "fr")
     update_sitemap(published)
 
     print(f"\n{len(published)} article(s) publié(s) sur {len(articles)} total "
