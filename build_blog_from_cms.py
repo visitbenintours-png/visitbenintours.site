@@ -63,6 +63,17 @@ def render_article_page(article, template_head, nav_block, footer_block):
     canonical = f"{DOMAIN}/blog/{slug}.html"
     img = article["featured_image"].lstrip("/")
     img_alt = article["featured_image_alt"]
+    language = str(article.get("language", "fr")).lower()
+    if language not in {"fr", "en"}:
+        language = "fr"
+    is_french = language == "fr"
+    home_href = "../fr/index.html" if is_french else "../index.html"
+    blog_href = "../fr/blog.html" if is_french else "../blog.html"
+    home_label = "Accueil" if is_french else "Home"
+    contact_href = "../fr/contact.html" if is_french else "../contact.html"
+    contact_title = "Envie de vivre cette expérience ?" if is_french else "Planning this experience?"
+    contact_text = "Contactez-nous pour réserver votre circuit privé." if is_french else "Contact us to book your private tour."
+    contact_label = "Nous contacter" if is_french else "Contact us"
     pub_date_iso = article["date"] if isinstance(article["date"], str) else article["date"].isoformat()
 
     jsonld = json.dumps({
@@ -72,6 +83,7 @@ def render_article_page(article, template_head, nav_block, footer_block):
         "description": desc,
         "image": f"{DOMAIN}/{img}",
         "datePublished": pub_date_iso,
+        "inLanguage": language,
         "author": {"@type": "Organization", "name": "Visit Bénin Tours"},
         "publisher": {
             "@type": "Organization",
@@ -85,7 +97,7 @@ def render_article_page(article, template_head, nav_block, footer_block):
     }, ensure_ascii=False, indent=2).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
 
     head = f'''<!DOCTYPE html>
-<html lang="fr">
+<html lang="{language}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -126,7 +138,7 @@ def render_article_page(article, template_head, nav_block, footer_block):
   <div class="inner-hero">
     <picture><img class="inner-hero-photo" src="../{img}" alt="{html_lib.escape(img_alt)}" fetchpriority="high" onload="this.closest('.inner-hero').classList.add('has-photo')" onerror="this.closest('picture').remove()"></picture>
     <div class="inner-hero-bg"></div><div class="inner-hero-pattern"></div>
-    <div class="breadcrumb"><a href="../index.html">Accueil</a><span class="breadcrumb-sep">›</span><a href="../blog.html">Blog</a><span class="breadcrumb-sep">›</span>{html_lib.escape(article['title'])}</div>
+    <div class="breadcrumb"><a href="{home_href}">{home_label}</a><span class="breadcrumb-sep">›</span><a href="{blog_href}">Blog</a><span class="breadcrumb-sep">›</span>{html_lib.escape(article['title'])}</div>
     <div class="inner-hero-content">
       <span class="hero-eyebrow" style="display:inline-block;margin-bottom:1rem">{html_lib.escape(article['category'])}</span>
       <h1>{html_lib.escape(article['title'])}</h1>
@@ -140,10 +152,10 @@ def render_article_page(article, template_head, nav_block, footer_block):
     </div>
     <div>
       <div class="contact-card">
-        <h3>Envie de vivre cette expérience ?</h3>
-        <p>Contactez-nous pour réserver votre circuit privé.</p>
+        <h3>{contact_title}</h3>
+        <p>{contact_text}</p>
         <a class="contact-btn whatsapp" onclick="openWhatsapp()">💬 WhatsApp</a>
-        <a class="contact-btn" href="../contact.html">✉️ Nous contacter</a>
+        <a class="contact-btn" href="{contact_href}">✉️ {contact_label}</a>
       </div>
     </div>
   </div>
