@@ -82,7 +82,7 @@ def render_article_page(article, template_head, nav_block, footer_block):
             },
         },
         "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
-    }, ensure_ascii=False, indent=2)
+    }, ensure_ascii=False, indent=2).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
 
     head = f'''<!DOCTYPE html>
 <html lang="fr">
