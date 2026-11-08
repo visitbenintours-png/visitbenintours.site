@@ -1,6 +1,7 @@
 ---
 title: "How to Travel Around Bénin: Transport Explained"
 slug: "how-to-travel-around-benin"
+language: "en"
 category: "Conseils pratiques"
 tags:
   - transport
