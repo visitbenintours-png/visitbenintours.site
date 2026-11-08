@@ -1,8 +1,30 @@
 {
   "buildCommand": "pip3 install -r requirements.txt && python3 build_blog_from_cms.py",
   "redirects": [
-    { "source": "/blog-ganvie-guide.html", "destination": "/blog/guide-ganvie.html", "permanent": true },
-    { "source": "/blog-vodun-culture.html", "destination": "/blog/culture-vodun.html", "permanent": true },
-    { "source": "/blog-travel-tips.html", "destination": "/blog/conseils-voyage-benin.html", "permanent": true }
+    {
+      "source": "/fr",
+      "destination": "/fr/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/blog-ganvie-guide.html",
+      "destination": "/blog/guide-ganvie.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog-vodun-culture.html",
+      "destination": "/blog/culture-vodun.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog-travel-tips.html",
+      "destination": "/blog/conseils-voyage-benin.html",
+      "permanent": true
+    }
   ]
 }
