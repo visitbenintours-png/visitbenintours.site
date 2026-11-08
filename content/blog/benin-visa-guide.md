@@ -1,6 +1,7 @@
 ---
 title: "Bénin Visa Guide: What You Actually Need"
 slug: "benin-visa-guide"
+language: "en"
 category: "Conseils pratiques"
 tags:
   - visa
