@@ -235,9 +235,12 @@ def extract_template_blocks(template_path, language):
     """Extract localized navigation/footer and adapt their URLs for /blog/*.html."""
     raw = open(template_path, encoding="utf-8").read()
     nav_start = raw.find('<!-- TOP BAR -->')
+    if nav_start < 0:
+        nav_start = raw.find('<div class="top-bar">')
     nav_end = raw.find('<div class="page active"')
     footer_start = raw.find('<footer>')
-    footer_end = raw.find('<script src="app.js"')
+    footer_end_match = re.search(r'<script src="(?:\\.\\./)?app\\.js"', raw)
+    footer_end = footer_end_match.start() if footer_end_match else -1
     if min(nav_start, nav_end, footer_start, footer_end) < 0:
         raise ValueError(f"{template_path}: structure nav/footer introuvable")
 
