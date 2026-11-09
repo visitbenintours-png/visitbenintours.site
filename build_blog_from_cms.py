@@ -231,31 +231,62 @@ def update_sitemap(published):
     print(f"✓ sitemap.xml mis à jour avec {len(published)} article(s)")
 
 
+def extract_template_blocks(template_path, language):
+    """Extract localized navigation/footer and adapt their URLs for /blog/*.html."""
+    raw = open(template_path, encoding="utf-8").read()
+    nav_start = raw.find('<!-- TOP BAR -->')
+    nav_end = raw.find('<div class="page active"')
+    footer_start = raw.find('<footer>')
+    footer_end = raw.find('<script src="app.js"')
+    if min(nav_start, nav_end, footer_start, footer_end) < 0:
+        raise ValueError(f"{template_path}: structure nav/footer introuvable")
+
+    nav = raw[nav_start:nav_end]
+    footer = raw[footer_start:footer_end]
+
+    def rewrite(match):
+        attr, url = match.group(1), match.group(2)
+        if url.startswith(("http://", "https://", "#", "mailto:", "tel:", "data:", "javascript:")):
+            return match.group(0)
+        if url.startswith("../"):
+            return match.group(0)
+        prefix = "../fr/" if language == "fr" and attr == "href" else "../"
+        return f'{attr}="{prefix}{url}"'
+
+    pattern = r'(href|src)="([^"]+)"'
+    nav = re.sub(pattern, rewrite, nav)
+    footer = re.sub(pattern, rewrite, footer)
+
+    # Language switch points to the corresponding blog listing, not the unrelated About page.
+    if language == "fr":
+        nav = re.sub(r'(<a href=")\.\./about\.html("[^>]*id="langSwitchLink")', r'\1../blog.html\2', nav)
+        nav = re.sub(r'(<a href=")\.\./about\.html("[^>]*id="mobileLangSwitchLink")', r'\1../blog.html\2', nav)
+        nav = nav.replace('id="langSwitchLink">FR', 'id="langSwitchLink">FR')
+    else:
+        nav = re.sub(r'(<a href=")\.\./fr/about\.html("[^>]*id="langSwitchLink")', r'\1../fr/blog.html\2', nav)
+        nav = re.sub(r'(<a href=")\.\./fr/about\.html("[^>]*id="mobileLangSwitchLink")', r'\1../fr/blog.html\2', nav)
+    return nav, footer
+
+
 def main():
-    raw_template = open(TEMPLATE_PATH, encoding="utf-8").read()
-
-    # Découpe le fichier-moule en 3 blocs réutilisables : nav (top-bar -> fin menu mobile),
-    # et footer (balise <footer> -> fin du fichier, wa-float + script inclus)
-    nav_start = raw_template.find('<!-- TOP BAR -->')
-    nav_end = raw_template.find('<div class="page active"')
-    nav_block = raw_template[nav_start:nav_end]
-    # adapte les chemins d'images/liens de nav pour un article servi depuis /blog/*.html (un niveau plus bas)
-    nav_block = re.sub(r'(href|src)="(?!http|#|mailto|tel)', r'\1="../', nav_block)
-    nav_block = nav_block.replace('href="../index.html"', 'href="../index.html"')  # no-op safe
-
-    footer_start = raw_template.find('<footer>')
-    footer_end = raw_template.find('<script src="app.js"')
-    footer_block = raw_template[footer_start:footer_end]
-    footer_block = re.sub(r'(href|src)="(?!http|#|mailto|tel)', r'\1="../', footer_block)
-
     os.makedirs(os.path.join(SITE_DIR, "blog"), exist_ok=True)
+
+    templates = {
+        "en": extract_template_blocks(os.path.join(SITE_DIR, "about.html"), "en"),
+        "fr": extract_template_blocks(os.path.join(SITE_DIR, "fr", "about.html"), "fr"),
+    }
 
     articles = load_articles()
     published = [a for a in articles if is_publishable(a)]
     published.sort(key=lambda a: str(a["date"]), reverse=True)
 
     for article in published:
+        language = str(article.get("language", "fr")).lower()
+        if language not in templates:
+            language = "fr"
+        nav_block, footer_block = templates[language]
         html_out = render_article_page(article, None, nav_block, footer_block)
+        html_out = html_out.replace("<body>", '<body class="blog-article">', 1)
         out_path = os.path.join(SITE_DIR, "blog", f'{article["slug"]}.html')
         open(out_path, "w", encoding="utf-8").write(html_out)
         print("✓ généré:", out_path)
