@@ -1,0 +1,46 @@
+/* Visit Benin Tours — homepage preview v1
+   Visual layer only: preserves the existing page structure and assets. */
+:root{
+  --gold:#C6A15B;--gold-light:#E0C78F;--earth:#123D2D;--earth-mid:#1D563F;
+  --cream:#F8F6EF;--sand:#EEE8D9;--forest:#1B6245;--sky:#123D2D;
+  --text:#18382C;--muted:#64756B;--white:#fff;
+}
+body{background:var(--cream);color:var(--text)}
+.top-bar{background:#0B241A}
+nav{background:rgba(18,61,45,.94);border-bottom-color:rgba(198,161,91,.3)}
+nav.transparent{background:linear-gradient(180deg,rgba(8,28,20,.78),transparent);border-bottom-color:transparent}
+.nav-dropdown{background:rgba(18,61,45,.98);border-color:rgba(198,161,91,.28)}
+.hero{background:var(--earth);min-height:min(760px,88vh);padding-top:180px}
+.hero.has-photo::after{background:linear-gradient(90deg,rgba(8,30,21,.78) 0%,rgba(8,30,21,.48) 55%,rgba(8,30,21,.18) 100%),linear-gradient(0deg,rgba(8,30,21,.48),transparent 55%)}
+.hero h1{max-width:720px;font-size:clamp(2.8rem,6vw,5.2rem);letter-spacing:-.035em}
+.hero-intro{font-size:1.12rem;max-width:570px}
+.hero-contact-card{background:rgba(13,48,34,.82);border-color:rgba(224,199,143,.38)}
+.btn-primary,.nav-cta{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#173A2B!important}
+.stats-bar{background:var(--earth);border-top:1px solid rgba(224,199,143,.28);border-bottom:1px solid rgba(224,199,143,.28)}
+.stat-num{color:var(--gold-light)}
+.stat-label{color:rgba(255,255,255,.75)}
+.ed-section{padding:6.5rem clamp(1.25rem,5vw,4.5rem)}
+.ed-h2{color:var(--earth)}
+.ed-h2 em{color:#A9823E}
+.ed-eyebrow{color:#987637}
+.ed-dest-grid{gap:1rem;grid-auto-rows:230px}
+.ed-dest-card{border-radius:10px;box-shadow:0 12px 32px rgba(18,61,45,.09)}
+.ed-dest-card::after{background:linear-gradient(180deg,rgba(7,29,20,0) 20%,rgba(7,29,20,.82) 100%)}
+.ed-manifesto::after{background:rgba(9,43,29,.58)}
+.ed-numbered-item{border-color:rgba(255,255,255,.16)}
+.tour-card,.blog-card,.review-platform-card{border-radius:10px;box-shadow:0 10px 28px rgba(18,61,45,.07)}
+.tour-card{border:1px solid rgba(18,61,45,.08)}
+.tour-price,.blog-card-tag,.blog-card-link,.review-platform-cta{color:#987637}
+.ed-cta::after{background:linear-gradient(90deg,rgba(8,35,24,.76),rgba(8,35,24,.58))}
+footer{background:#0B241A}
+.wa-float{box-shadow:0 8px 26px rgba(0,0,0,.24)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--gold-light);outline-offset:3px}
+@media(max-width:700px){
+ .hero{min-height:680px;padding:140px 1.25rem 3rem}
+ .hero.has-photo::after{background:linear-gradient(180deg,rgba(8,30,21,.28),rgba(8,30,21,.78))}
+ .hero h1{font-size:clamp(2.5rem,11vw,3.8rem)}
+ .hero-intro{font-size:1rem}
+ .ed-section{padding:4rem 1.25rem}
+ .ed-dest-grid{gap:.85rem;grid-auto-rows:260px}
+ .stats-inner{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
